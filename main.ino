@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include "motor.h"
 
 #define STATUS_LED 13
@@ -18,8 +19,11 @@
 Motor headMotor;
 Motor mvmtMotor;
 
-unsigned long lastMillis;
-boolean statusLedValue;
+unsigned long lastTickMillis = 0;
+unsigned long last5Millis = 0;
+unsigned long last10Millis = 0;
+unsigned long last500Millis = 0;
+boolean statusLedValue = LOW;
 
 void setup() {
   // All my outputs. Tons!!!
@@ -47,18 +51,23 @@ void tickDispatch(unsigned long delta) {
     //TODO: haven't got a clue what this is for.
   }
   // IR code should come here, too.
+  lastTickMillis = millis();
 }
 
-void 5MillisDispatch(unsigned long delta) {
+void fiveMillisDispatch(unsigned long delta) {
   // placeholder
+  last5Millis = millis();
 }
 
-void 10MillisDispatch(unsigned long delta) {
+void tenMillisDispatch(unsigned long delta) {
   //placeholder
+  last10Millis = millis();
 }
 
 void halfSecondDispatch(unsigned long delta) {
   digitalWrite(STATUS_LED, !statusLedValue);
+  statusLedValue = !statusLedValue;
+  last500Millis = millis();
 }
 
 
@@ -66,21 +75,19 @@ void halfSecondDispatch(unsigned long delta) {
 // This is a dispatch function.
 // NOTHING should ever by directly here. Everything MUST be in a dispatch function.
 void loop() {
+
   // the delta can't underflow since time travel hasn't been invented yet...
-  tickDispatch(Millis() - lastMillis);
+  tickDispatch(millis() - lastTickMillis);
 
-  // This code WILL break after about 50 days due to `Millis()` overflowing. Not an issue.
+  // This code WILL break after about 50 days due to `millis()` overflowing. Not an issue.
   // Additional dispatches may be added if necessary
-  if (Millis() >= lastMillis + 5) {
-    5MillisDispatch(Millis() - lastMillis);
+  if (millis() >= last5Millis + 5) {
+    fiveMillisDispatch(millis() - last5Millis);
   }
-  if (Millis >= lastMillis + 10) {
-    10MillisDispatch(Millis() - lastMillis);
+  if (millis() >= last10Millis + 10) {
+    tenMillisDispatch(millis() - last10Millis);
   }
-  if (Millis >= lastMillis + 500) {
-    halfSecondDispatch(Millis() - lastMillis);
+  if (millis() >= last500Millis + 500) {
+    halfSecondDispatch(millis() - last500Millis);
   }
-
-  // I think this is obvious
-  lastMillis = Millis();
 }
