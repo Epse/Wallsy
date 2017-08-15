@@ -1,3 +1,5 @@
+#include "motor.h"
+
 #define STATUS_LED 13
 #define LEFT_EYE_LED 3
 #define RIGHT_EYE_LED 4
@@ -12,48 +14,6 @@
 #define H_BRIDGE_MVMT_A 17
 #define H_BRIDGE_MVMT_B 16
 #define DISTANCE_SENS 20
-
-class Motor {
-  int enablePin;
-  int aPin;
-  int bPin;
-
-public:
-  void init(int initEnablePin, int initAPin, int initBPin);
-  void disable();
-  void enable();
-  void forwards();
-  void backwards();
-  void stop();
-};
-
-void Motor::init(int initEnablePin, int initAPin, int initBPin) {
-  enablePin = initEnablePin;
-  aPin = initAPin;
-  bPin = initBPin;
-
-  pinMode(enablePin, OUTPUT);
-  pinMode(aPin, OUTPUT);
-  pinMode(bPin, OUTPUT);
-}
-void Motor::disable() {
-  digitalWrite(enablePin, LOW);
-}
-void Motor::enable() {
-  digitalWrite(enablePin, HIGH);
-}
-void Motor::forwards() {
-  digitalWrite(aPin, LOW);
-  digitalWrite(bPin, HIGH);
-}
-void Motor::backwards() {
-  digitalWrite(aPin, HIGH);
-  digitalWrite(bPin, LOW);
-}
-void Motor::stop() {
-  digitalWrite(aPin, LOW);
-  digitalWrite(bPin, LOW);
-}
 
 Motor headMotor;
 Motor mvmtMotor;
