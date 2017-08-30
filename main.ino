@@ -24,6 +24,7 @@ unsigned long last5Millis = 0;
 unsigned long last10Millis = 0;
 unsigned long last500Millis = 0;
 boolean statusLedValue = LOW;
+boolean frontBtnLastKnownValue = false;
 
 void setup() {
   // All my outputs. Tons!!!
@@ -47,8 +48,15 @@ void setup() {
 // Is called as fast as possible with the delta the millisecond difference since last call.
 // WARNING: the delta can be 0!
 void tickDispatch(unsigned long delta) {
-  if (digitalRead(FRONT_BTN)) {
-    //TODO: haven't got a clue what this is for.
+  if (digitalRead(FRONT_BTN) != frontBtnLastKnownValue) {
+    frontBtnLastKnownValue = digitalRead(FRONT_BTN);
+    if (frontBtnLastKnownValue) {
+        analogWrite(LEFT_EYE_LED, 128);
+        analogWrite(RIGHT_EYE_LED, 128);
+    } else {
+      analogWrite(LEFT_EYE_LED, 0);
+      analogWrite(RIGHT_EYE_LED, 0);
+    }
   }
   // IR code should come here, too.
   lastTickMillis = millis();
