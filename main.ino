@@ -82,8 +82,6 @@ void halfSecondDispatch(unsigned long delta) {
   last500Millis = millis();
 }
 
-
-
 // This is a dispatch function.
 // NOTHING should ever by directly here. Everything MUST be in a dispatch function.
 void loop() {
