@@ -43,6 +43,10 @@ void setup() {
   // This also initializes the necessary pins to output.
   headMotor.init(H_BRIDGE_TOP_ENABLE, H_BRIDGE_TOP_A, H_BRIDGE_TOP_B);
   mvmtMotor.init(H_BRIDGE_MVMT_ENABLE, H_BRIDGE_MVMT_A, H_BRIDGE_MVMT_B);
+
+  // Set up some eyes
+  analogWrite(LEFT_EYE_LED, 128);
+  analogWrite(RIGHT_EYE_LED, 128);
 }
 
 // Is called as fast as possible with the delta the millisecond difference since last call.
@@ -51,11 +55,11 @@ void tickDispatch(unsigned long delta) {
   if (digitalRead(FRONT_BTN) != frontBtnLastKnownValue) {
     frontBtnLastKnownValue = digitalRead(FRONT_BTN);
     if (frontBtnLastKnownValue) {
-        analogWrite(LEFT_EYE_LED, 128);
-        analogWrite(RIGHT_EYE_LED, 128);
+        analogWrite(LEFT_EYE_LED, 500);
+        analogWrite(RIGHT_EYE_LED, 500);
     } else {
-      analogWrite(LEFT_EYE_LED, 0);
-      analogWrite(RIGHT_EYE_LED, 0);
+      analogWrite(LEFT_EYE_LED, 128);
+      analogWrite(RIGHT_EYE_LED, 128);
     }
   }
   // IR code should come here, too.
