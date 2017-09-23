@@ -1,0 +1,14 @@
+#define IRR_Forwards 0x42071B37
+#define IRR_Turn 0x5321CE3F
+#define IRR_ForwBtn 0xF034E147
+#define IRR_LeftBtn 0x5BF2E8AF
+#define IRR_HalfTurn 0x14F944F
+#define IRR_FullTurn 0xFE4BD12F
+#define IRR_Talk 0x58EF258F
+#define IRR_Prog 0x6B87DFE7
+#define IRR_GoStop 0xE60A533F
+#define IRR_Cube 0xB8DF8467
+#define IRR_Music 0xFABE8FFF
+#define IRR_Charge 0x667C9767
+#define IRR_Dance 0xBD94307
+#define IRR_Eyes 0xA01B3B9F

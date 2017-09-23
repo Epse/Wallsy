@@ -1,5 +1,7 @@
 #include <Arduino.h>
 #include "motor.h"
+#include "ircodes.h"
+#include <IRremote.h>
 
 #define STATUS_LED 13
 #define LEFT_EYE_LED 3
@@ -12,12 +14,15 @@
 #define H_BRIDGE_TOP_A 14
 #define H_BRIDGE_TOP_B 5
 #define H_BRIDGE_MVMT_ENABLE 8
+// FIXME:
 #define H_BRIDGE_MVMT_A 17
 #define H_BRIDGE_MVMT_B 16
 #define DISTANCE_SENS 20
 
 Motor headMotor;
 Motor mvmtMotor;
+
+IRrecv irrecvRear(IR_REAR);
 
 unsigned long lastTickMillis = 0;
 unsigned long last5Millis = 0;
@@ -27,6 +32,8 @@ boolean statusLedValue = LOW;
 boolean frontBtnLastKnownValue = false;
 
 void setup() {
+  Serial.begin(9600);
+
   // All my outputs. Tons!!!
   pinMode(STATUS_LED, OUTPUT);
   pinMode(LEFT_EYE_LED, OUTPUT);
@@ -39,10 +46,14 @@ void setup() {
   pinMode(IR_TOP, INPUT);
   pinMode(IR_REAR, INPUT);
 
+  irrecvRear.enableIRIn();
+  irrecvRear.blink13(true);
+
   // Own libraries
   // This also initializes the necessary pins to output.
   headMotor.init(H_BRIDGE_TOP_ENABLE, H_BRIDGE_TOP_A, H_BRIDGE_TOP_B);
   mvmtMotor.init(H_BRIDGE_MVMT_ENABLE, H_BRIDGE_MVMT_A, H_BRIDGE_MVMT_B);
+  mvmtMotor.enable();
 
   // Set up some eyes
   analogWrite(LEFT_EYE_LED, 128);
@@ -52,18 +63,39 @@ void setup() {
 // Is called as fast as possible with the delta the millisecond difference since last call.
 // WARNING: the delta can be 0!
 void tickDispatch(unsigned long delta) {
-  if (digitalRead(FRONT_BTN) != frontBtnLastKnownValue) {
-    frontBtnLastKnownValue = digitalRead(FRONT_BTN);
-    if (frontBtnLastKnownValue) {
-        analogWrite(LEFT_EYE_LED, 500);
-        analogWrite(RIGHT_EYE_LED, 500);
-    } else {
-      analogWrite(LEFT_EYE_LED, 128);
-      analogWrite(RIGHT_EYE_LED, 128);
-    }
-  }
-  // IR code should come here, too.
   lastTickMillis = millis();
+
+  boolean motorShouldTurn = false;
+  boolean eyesShouldLight = false;
+
+  decode_results results;
+  if (irrecvRear.decode(&results)) {
+    if (results.value == IRR_Turn) {
+      mvmtMotor.backwards();
+      motorShouldTurn = true;
+    }
+
+    if (results.value == IRR_Forwards) {
+      mvmtMotor.forwards();
+      motorShouldTurn = true;
+    }
+
+    if (results.value == IRR_Eyes) {
+      analogWrite(LEFT_EYE_LED, 400);
+      analogWrite(RIGHT_EYE_LED, 400);
+      eyesShouldLight = true;
+    }
+
+    irrecvRear.resume(); // Receive the next value
+  }
+
+  if (!motorShouldTurn) {
+    mvmtMotor.stop();
+  }
+  if (!eyesShouldLight) {
+    analogWrite(LEFT_EYE_LED, 128);
+    analogWrite(RIGHT_EYE_LED, 128);
+  }
 }
 
 void fiveMillisDispatch(unsigned long delta) {
