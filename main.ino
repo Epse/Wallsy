@@ -6,7 +6,6 @@
 #define STATUS_LED 13
 #define LEFT_EYE_LED 3
 #define RIGHT_EYE_LED 4
-#define FRONT_BTN 2
 #define IR_TOP 21
 #define IR_REAR 7
 #define SPEAKER 6
@@ -14,7 +13,6 @@
 #define H_BRIDGE_TOP_A 14
 #define H_BRIDGE_TOP_B 5
 #define H_BRIDGE_MVMT_ENABLE 8
-// FIXME:
 #define H_BRIDGE_MVMT_A 17
 #define H_BRIDGE_MVMT_B 16
 #define DISTANCE_SENS 20
@@ -42,7 +40,6 @@ void setup() {
   pinMode(DISTANCE_SENS, INPUT);
 
   // Inputs. Wayyyy less.
-  pinMode(FRONT_BTN, INPUT);
   pinMode(IR_TOP, INPUT);
   pinMode(IR_REAR, INPUT);
 
