@@ -8,10 +8,10 @@
 #define RIGHT_EYE_LED 4
 #define IR_TOP 21
 #define IR_REAR 7
-#define SPEAKER 6
+#define SPEAKER 5
 #define H_BRIDGE_TOP_ENABLE 15
 #define H_BRIDGE_TOP_A 14
-#define H_BRIDGE_TOP_B 5
+#define H_BRIDGE_TOP_B 6
 #define H_BRIDGE_MVMT_ENABLE 8
 #define H_BRIDGE_MVMT_A 17
 #define H_BRIDGE_MVMT_B 16
